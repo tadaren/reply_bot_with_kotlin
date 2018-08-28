@@ -53,52 +53,55 @@ class WebHookController{
     fun defaultMessageEvent(event: Event){
         println(event)
     }
-}
 
-fun upsertMapping(key: String, value: String): Boolean{
-    dataSource.connection.use {
-        return try {
-            val statement = it.createStatement()
-            statement.executeUpdate("CREATE TABLE IF NOT EXISTS reply_map(key TEXT NOT NULL UNIQUE, value TEXT NOT NULL)")
-            val preStatement = it.prepareStatement("INSERT INTO reply_map VALUES (?, ?) ON CONFLICT ON CONSTRAINT reply_map_key_key DO UPDATE SET value=?")
-            preStatement.setString(1, key)
-            preStatement.setString(2, value)
-            preStatement.setString(3, value)
-            preStatement.execute()
-        } catch(e: SQLException) {
-            false
+
+    @Value("\${spring.datesource.url}")
+    private val dbUrl: String? = null
+
+    @Autowired
+    private lateinit var dataSource: DataSource
+
+    @Bean
+    @Throws(SQLException::class)
+    fun dataSource(): DataSource{
+        return if (dbUrl?.isEmpty() != false) {
+            HikariDataSource()
+        } else {
+            val config = HikariConfig()
+            config.jdbcUrl = dbUrl
+            HikariDataSource(config)
         }
     }
-}
 
-fun selectFromMapping(key: String): String?{
-    dataSource.connection.use {
-        return try {
-            val preStatement = it.prepareStatement("SELECT * FROM reply_map WHERE key=? ")
-            preStatement.setString(1, key)
-            val s = preStatement.executeQuery()
-            s.getString(1)
-        }catch(e: SQLException){
-            null
+
+    fun upsertMapping(key: String, value: String): Boolean{
+        dataSource.connection.use {
+            return try {
+                val statement = it.createStatement()
+                statement.executeUpdate("CREATE TABLE IF NOT EXISTS reply_map(key TEXT NOT NULL UNIQUE, value TEXT NOT NULL)")
+                val preStatement = it.prepareStatement("INSERT INTO reply_map VALUES (?, ?) ON CONFLICT ON CONSTRAINT reply_map_key_key DO UPDATE SET value=?")
+                preStatement.setString(1, key)
+                preStatement.setString(2, value)
+                preStatement.setString(3, value)
+                preStatement.execute()
+            } catch(e: SQLException) {
+                false
+            }
         }
     }
-}
 
-
-@Value("\${spring.datesource.url}")
-private val dbUrl: String? = null
-
-@Autowired
-private lateinit var dataSource: DataSource
-
-@Bean
-@Throws(SQLException::class)
-fun dataSource(): DataSource{
-    return if (dbUrl?.isEmpty() != false) {
-        HikariDataSource()
-    } else {
-        val config = HikariConfig()
-        config.jdbcUrl = dbUrl
-        HikariDataSource(config)
+    fun selectFromMapping(key: String): String?{
+        dataSource.connection.use {
+            return try {
+                val preStatement = it.prepareStatement("SELECT * FROM reply_map WHERE key=? ")
+                preStatement.setString(1, key)
+                val s = preStatement.executeQuery()
+                s.getString(1)
+            }catch(e: SQLException){
+                null
+            }
+        }
     }
+
 }
+
