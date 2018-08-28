@@ -12,7 +12,7 @@ import javax.sql.DataSource
 @Component
 class DBController{
 
-    @Value("\${spring.datesource.url}")
+    @Value("\${spring.datasource.url}")
     private val dbUrl: String? = null
 
     @Autowired
