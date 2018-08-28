@@ -27,7 +27,7 @@ fun main(args: Array<String>) {
 }
 
 @LineMessageHandler
-@RequestMapping("/line_bot")
+//@RequestMapping("/line_bot")
 class WebHookController{
 
     @EventMapping
