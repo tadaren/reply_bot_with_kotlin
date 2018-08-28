@@ -26,12 +26,12 @@ fun main(args: Array<String>) {
     runApplication<Application>(*args)
 }
 
-@RequestMapping("/line_bot")
 @LineMessageHandler
+@RequestMapping("/line_bot")
 class WebHookController{
 
-    @Throws(Exception::class)
     @EventMapping
+    @Throws(Exception::class)
     fun handleTextMessageEvent(event: MessageEvent<TextMessageContent>): Message{
         println(event)
         val text = event.message.text
