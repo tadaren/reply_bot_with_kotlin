@@ -1,0 +1,1 @@
+web: java -jar build/libs/reply_bot-0.0.1.jar
