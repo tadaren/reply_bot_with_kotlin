@@ -49,6 +49,7 @@ class WebHookController{
                 preStatement.setString(3, value)
                 preStatement.execute()
             } catch(e: SQLException) {
+                println(e.message)
                 false
             }
         }
@@ -62,6 +63,7 @@ class WebHookController{
                 val s = preStatement.executeQuery()
                 s.getString(1)
             }catch(e: SQLException){
+                println(e.message)
                 null
             }
         }
