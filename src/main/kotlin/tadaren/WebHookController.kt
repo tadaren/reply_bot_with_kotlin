@@ -43,7 +43,7 @@ class WebHookController{
             return try {
                 val statement = it.createStatement()
                 statement.executeUpdate("""CREATE TABLE IF NOT EXISTS reply_map(key TEXT NOT NULL UNIQUE, value TEXT NOT NULL)""")
-                val preStatement = it.prepareStatement("""INSERT INTO reply_map VALUES ("?", "?") ON CONFLICT ON CONSTRAINT reply_map_key_key DO UPDATE SET value="?"""")
+                val preStatement = it.prepareStatement("""INSERT INTO reply_map VALUES ('?', '?') ON CONFLICT ON CONSTRAINT reply_map_key_key DO UPDATE SET value='?'""")
                 preStatement.setString(1, key)
                 preStatement.setString(2, value)
                 preStatement.setString(3, value)
@@ -62,10 +62,10 @@ class WebHookController{
                 val preStatement = it.prepareStatement("""SELECT value FROM reply_map WHERE key='?' """)
                 preStatement.setString(1, key)
                 val s = preStatement.executeQuery()
-                println(s)
+                println("Result: $s")
                 s.getString(1)
             }catch(e: SQLException){
-                println(e.message)
+                println("SQLException: ${e.message}")
                 null
             }
         }
