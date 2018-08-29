@@ -61,6 +61,7 @@ class WebHookController{
             return try {
                 val preStatement = it.prepareStatement("""SELECT value FROM reply_map WHERE key='?' """)
                 preStatement.setString(1, key)
+                println("string setted")
                 val s = preStatement.executeQuery()
                 println("Result: $s")
                 s.getString(1)
