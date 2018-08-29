@@ -64,7 +64,10 @@ class WebHookController{
                 println("string setted")
                 val s = preStatement.executeQuery()
                 println("Result: $s")
-                s.getString(1)
+                return if(s.next())
+                    s.getString(1)
+                else
+                    null
             }catch(e: SQLException){
                 println("SQLException: ${e.message}")
                 null
