@@ -48,6 +48,7 @@ class WebHookController{
                 preStatement.setString(2, value)
                 preStatement.setString(3, value)
                 preStatement.execute()
+                true
             } catch(e: SQLException) {
                 println(e.message)
                 false
@@ -58,7 +59,7 @@ class WebHookController{
     fun selectFromMapping(key: String): String?{
         dataSource.connection.use {
             return try {
-                val preStatement = it.prepareStatement("""SELECT * FROM reply_map WHERE key="?" """)
+                val preStatement = it.prepareStatement("""SELECT * FROM reply_map WHERE key='?' """)
                 preStatement.setString(1, key)
                 val s = preStatement.executeQuery()
                 s.getString(1)
