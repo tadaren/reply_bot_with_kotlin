@@ -42,8 +42,8 @@ class WebHookController{
         dataSource.connection.use {
             return try {
                 val statement = it.createStatement()
-                statement.executeUpdate("""CREATE TABLE IF NOT EXISTS reply_map(key TEXT NOT NULL UNIQUE, value TEXT NOT NULL)""")
-                val preStatement = it.prepareStatement("""INSERT INTO reply_map VALUES ('?', '?') ON CONFLICT ON CONSTRAINT reply_map_key_key DO UPDATE SET value='?'""")
+                statement.executeUpdate("CREATE TABLE IF NOT EXISTS reply_map(key TEXT NOT NULL UNIQUE, value TEXT NOT NULL)")
+                val preStatement = it.prepareStatement("INSERT INTO reply_map VALUES (?, ?) ON CONFLICT ON CONSTRAINT reply_map_key_key DO UPDATE SET value=?")
                 preStatement.setString(1, key)
                 preStatement.setString(2, value)
                 preStatement.setString(3, value)
@@ -59,7 +59,7 @@ class WebHookController{
     fun selectFromMapping(key: String): String?{
         dataSource.connection.use {
             return try {
-                val preStatement = it.prepareStatement("""SELECT value FROM reply_map WHERE key='?' """)
+                val preStatement = it.prepareStatement("SELECT value FROM reply_map WHERE key=? ")
                 preStatement.setString(1, key)
                 println("string setted")
                 val s = preStatement.executeQuery()
@@ -78,7 +78,7 @@ class WebHookController{
         println(event)
         val text = event.message.text
 
-        val splitText = text.split(Regex("""(?:　(?:＝?＝|=[=>]?|->)　| (?:＝?＝|=[=>]?|->)|＝?＝|=[=>]?|->)"""))
+        val splitText = text.split(Regex("(?:　(?:＝?＝|=[=>]?|->)　| (?:＝?＝|=[=>]?|->)|＝?＝|=[=>]?|->)"))
 
         if(Regex("""https?://[\w/:%#\\${'$'}&\?\(\)~\.=\+\-]+""").containsMatchIn(splitText[0])){
             return arrayListOf(TextMessage(""))
