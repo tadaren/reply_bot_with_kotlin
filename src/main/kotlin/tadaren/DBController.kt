@@ -16,8 +16,14 @@ object DBController{
     @Value("\${spring.datasource.url}")
     private val dbUrl: String? = null
 
-    @Autowired
-    lateinit var dataSource: DataSource
+
+    var dataSource: DataSource? = null
+    get() {
+        if(field == null){
+            dataSource = dataSource()
+        }
+        return field
+    }
 
     @Bean
     @Throws(SQLException::class)
@@ -35,7 +41,7 @@ object DBController{
 
 
 fun upsertMapping(key: String, value: String): Boolean{
-    DBController.dataSource.connection.use {
+    DBController.dataSource!!.connection.use {
         return try {
             val statement = it.createStatement()
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS reply_map(key TEXT NOT NULL UNIQUE, value TEXT NOT NULL)")
@@ -51,7 +57,7 @@ fun upsertMapping(key: String, value: String): Boolean{
 }
 
 fun selectFromMapping(key: String): String?{
-    DBController.dataSource.connection.use {
+    DBController.dataSource!!.connection.use {
         return try {
             val preStatement = it.prepareStatement("SELECT * FROM reply_map WHERE key=? ")
             preStatement.setString(1, key)
