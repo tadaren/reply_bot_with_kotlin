@@ -69,21 +69,21 @@ class WebHookController{
 
     @EventMapping
     @Throws(Exception::class)
-    fun handleTextMessageEvent(event: MessageEvent<TextMessageContent>): Message {
+    fun handleTextMessageEvent(event: MessageEvent<TextMessageContent>): ArrayList<Message> {
         println(event)
         val text = event.message.text
 
         val splitText = text.split(Regex("""(?:　(?:＝?＝|=[=>]?|->)　| (?:＝?＝|=[=>]?|->)|＝?＝|=[=>]?|->)"""))
 
         if(Regex("""https?://[\w/:%#\\${'$'}&\?\(\)~\.=\+\-]+""").containsMatchIn(splitText[0])){
-            return TextMessage("")
+            return arrayListOf(TextMessage(""))
         }
 
-        return TextMessage(when(splitText.size){
+        return arrayListOf(TextMessage(when(splitText.size){
             1 -> selectFromMapping(splitText[0])?:""
             2 -> if(upsertMapping(splitText[0], splitText[1])) "success" else "failure"
             else -> ""
-        })
+        }))
     }
 
     @EventMapping
