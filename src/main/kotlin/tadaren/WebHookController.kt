@@ -80,9 +80,9 @@ class WebHookController{
         }
 
         return arrayListOf(TextMessage(when(splitText.size){
-            1 -> selectFromMapping(splitText[0])?:""
+            1 -> selectFromMapping(splitText[0])?:"None"
             2 -> if(upsertMapping(splitText[0], splitText[1])) "success" else "failure"
-            else -> ""
+            else -> "other"
         }))
     }
 
