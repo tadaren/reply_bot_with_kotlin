@@ -12,15 +12,20 @@ import com.zaxxer.hikari.HikariDataSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
+import org.springframework.stereotype.Component
 import org.springframework.stereotype.Controller
 import java.sql.SQLException
 import javax.sql.DataSource
 
 
-@Controller
+@Component
 @LineMessageHandler
 class WebHookController{
-//
+
+    @Autowired
+//    lateinit var mappingService: MappingService
+    lateinit var mappingRepository: MappingRepository
+
 //    @Value("\${spring.datasource.url:}")
 //    private val dbUrl: String? = null
 //

@@ -16,6 +16,4 @@ class Mapping{
     @Column(name = "value", nullable = false)
     val value: String = ""
 
-
-
 }
