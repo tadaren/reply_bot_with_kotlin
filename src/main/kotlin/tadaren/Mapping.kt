@@ -11,9 +11,14 @@ class Mapping{
 
     @Id
     @Column(name = "key", nullable = false)
-    val key: String = ""
+    var key: String = ""
 
     @Column(name = "value", nullable = false)
-    val value: String = ""
+    var value: String = ""
+
+    constructor(key: String, value: String){
+        this.key = key
+        this.value = value
+    }
 
 }

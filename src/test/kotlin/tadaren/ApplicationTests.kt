@@ -48,7 +48,7 @@ class ApplicationTests {
 //                        BotApiResponse("ok", Collections.emptyList())
 //                ))
 
-        underTest.handleTextMessageEvent(request)
+//        underTest.handleTextMessageEvent(request)
 
         verify(lineMessagingClient).replyMessage(ReplyMessage("replyToken", listOf<Message>(TextMessage("ふとし"))))
 

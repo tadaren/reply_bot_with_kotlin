@@ -9,6 +9,7 @@ import com.linecorp.bot.spring.boot.annotation.EventMapping
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
+import org.hibernate.criterion.Example
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -93,24 +94,27 @@ class WebHookController{
 //        }
 //    }
 
-//    @EventMapping
-//    @Throws(Exception::class)
-//    fun handleTextMessageEvent(event: MessageEvent<TextMessageContent>): Message? {
-//        println(event)
-//        val text = event.message.text
-//
-//        val splitText = text.split(Regex("(?:　(?:＝?＝|=[=>]?|->)　| (?:＝?＝|=[=>]?|->)|＝?＝|=[=>]?|->)"))
-//
-//        if(Regex("""https?://[\w/:%#\\${'$'}&\?\(\)~\.=\+\-]+""").containsMatchIn(splitText[0])){
-//            return null
-//        }
-//
-//        return when(splitText.size){
-//            1 -> selectFromMapping(splitText[0])?.let { TextMessage(it) }
-//            2 -> TextMessage(if(upsertMapping(splitText[0], splitText[1])) "success" else "failure")
-//            else -> null
-//        }
-//    }
+    @EventMapping
+    @Throws(Exception::class)
+    fun handleTextMessageEvent(event: MessageEvent<TextMessageContent>): Message? {
+        println(event)
+        val text = event.message.text
+
+        val splitText = text.split(Regex("(?:　(?:＝?＝|=[=>]?|->)　| (?:＝?＝|=[=>]?|->)|＝?＝|=[=>]?|->)"))
+
+        if(Regex("""https?://[\w/:%#\\${'$'}&\?\(\)~\.=\+\-]+""").containsMatchIn(splitText[0])){
+            return null
+        }
+
+        return when(splitText.size){
+            1 -> TextMessage(mappingRepository.findByKey(splitText[0])?.value)
+            2 -> {
+                mappingRepository.save(Mapping(splitText[0], splitText[1]))
+                TextMessage("success")
+            }
+            else -> null
+        }
+    }
 
     @EventMapping
     fun defaultMessageEvent(event: Event){

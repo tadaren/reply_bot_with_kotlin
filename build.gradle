@@ -49,5 +49,6 @@ dependencies {
     runtime('org.postgresql:postgresql')
     compile('org.postgresql:postgresql')
     compile group: 'com.zaxxer', name: 'HikariCP', version: '2.7.7'
+    compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }

@@ -4,4 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface MappingRepository: JpaRepository<Mapping, Long>
+interface MappingRepository: JpaRepository<Mapping, Long>{
+    fun findByKey(key: String): Mapping?
+}
