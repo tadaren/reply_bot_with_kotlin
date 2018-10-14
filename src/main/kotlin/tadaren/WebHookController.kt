@@ -25,12 +25,19 @@ class WebHookController{
         println(event)
         val text = event.message.text
 
+        // special pattern
+        when(text){
+            "list", "リスト" -> return TextMessage(mappingRepository.findAll().joinToString(separator = "\n") { it.key })
+        }
+
         val splitText = text.split(Regex("(?:　(?:＝?＝|=[=>]?|->)　| (?:＝?＝|=[=>]?|->)|＝?＝|=[=>]?|->)"))
 
+        // exclude URL pattern
         if(Regex("""https?://[\w/:%#\\${'$'}&?()~.=+\-]+""").containsMatchIn(splitText[0])){
             return null
         }
 
+        // default mapping reply
         return when(splitText.size){
             1 -> mappingRepository.findByKey(splitText[0])?.value?.let { TextMessage(it) }
             2 -> {
